@@ -1,0 +1,248 @@
+1-CREAR UNA SD Y SSD BOOTABLE CON RASPBIAN USANDO ETCHER
+
+**DESCARGAR ETCHER Y Raspbian Stretch with desktop***
+https://www.balena.io/etcher/
+https://www.raspberrypi.org/downloads/raspbian/
+
+2-CREAMOS UN ARCHIVO ssh SIN FORMATO DENTRO DEL BOOT DEL SD, ADEMÁS
+AÑADIMOS ip=192.168.2.106 AL FINAL DEL ARCHIVO cmdline.txt 
+**la ip que debes añadir es una ip que este libre, para eso debes acceder a tu router y ver que ip esta libre***
+(edito el cmdline.txt porque mi router archer c6 no le asigna una ip automáticamente a mi rpi4)
+
+
+3-HAY UN BUG AL CREAR NUESTRO BOOTABLE DE
+SD Y SSD, POR LA CUAL AMBOS TIENEN LA MISMA PARTUUID, POR ESO DEBEMOS CAMBIARLO.
+
+4-PRIMERO INICIAMOS LA RPI4 DESDE LA SD.
+NO HAY QUE ACTUALIZAR NADA.
+
+5-CONECTAMOS EL DISCO SSD
+
+6-ACCEDEREMOS A A LA RPI4 USANDO SSH.INSTALAR PUTTY EN LA PC WINDOWS
+
+https://www.putty.org/
+
+7-INICIAR PUTTY
+
+8-PONER LA IP DE RASPBERRY EN PUTTY Y
+EN LA VENTANA QUE SE ABRE DALE EN "SI"
+
+Host Name (or IP Address): 192.168.2.106
+
+9-TE PIDE USER Y PASS:
+*Ponemos user:pi pass:raspberry
+
+10-PODEMOS COMPROBAR QUE AMBOS TIENE LA MISMA PARTUUID CON ESTE COMANDO
+
+sudo blkid
+
+11-LISTAR DISCO
+
+sudo fdisk -l
+
+
+12-AHORA AL SSD LE VAMOS A PONER ESTE PARTUUID HEXADECIMAL  d34db33f, tipeamos:
+
+sudo fdisk /dev/sda
+
+13-LUEGO PONER p (PRINT-MUESTRA LAS PARTICIONES)
+
+p
+
+
+14-TIPEAR x (ACCEDER A NUEVAS OPCIONES)
+
+x
+
+15-ESCRIBIR i (CAMBIAR PARTUUID)
+
+i
+
+16-ESCRIBIMOS
+
+0xd34db33f
+
+17-LUEGO PONER r (SALIR DE NUEVAS OPCIONES)
+
+r
+
+18-TIPEAR w (GUARDAR Y SALIR)
+
+w
+
+19-VERIFICAMOS LOS CAMBIOS
+
+sudo blkid
+
+20-VAMOS A REDIMENSIONAR LA PARTICIÓN
+
+sudo parted /dev/sda
+
+
+21-AHORA ESCRIBIMOS print PARA VER LAS PARTICIONES DEL SSD
+
+print
+
+22- ESCRIMOS
+
+resizepart
+
+23-AHORA ELEGIMOS LA PARTICIÓN ext4 QUE EN ESTE CASO ES LA NUMERO 2
+
+2
+
+20-VEMOS EL TAMAÑO EN Disk /dev/sda: 360.0GB, ENTONCES PONEMOS
+
+360000
+
+24-PONEMOS print para comprobar
+
+print
+
+25-SALIMOS DE PARTED
+
+quit
+
+26-CAMBIAR EL TAMAÑO DEL SISTEMA DE ARCHIVOS PARA LLENAR EL ESPACIO DE PARTICIÓN 2
+
+sudo resize2fs /dev/sda2
+
+27-ES POSIBLE QUE TE MUESTRE UN COMANDO QUE DEBES EJECUTAR ANTES, SOLO COPIALO TAL CUAL Y EJECUTALO
+
+sudo e2fsck -f /dev/sda2
+
+28-AHORA SI EJECUTAMOS ESTE COMANDO
+
+sudo resize2fs /dev/sda2
+
+
+29-EDITAR cmdline.txt CAMBIAR EL PARTUUID POR d34db33f-02 
+
+sudo nano /boot/cmdline.txt
+
+30-DEBERÍA QUEDAR ALGO ASI
+
+console=serial0,115200 console=tty1 root=PARTUUID=d34db33f-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait quiet ip=192.168.2.106
+
+31-REINICIAR
+
+sudo reboot
+
+32-VERIFICAR QUE SE ESTA USANDO EL SSD
+
+findmnt -n -o SOURCE /
+
+33-COMPROBAR EL TAMAÑO DEL DISCO****
+
+df -h
+
+34-EDITAR EL ARCHIVO FSTAB (hora estamos listos para editar el archivo / etc / fstab para que apunte a nuestra unidad actualizada.)
+
+sudo nano /etc/fstab
+
+35-CAMBIAR EL PARTUUID=d34db33f-02  DEL ext4
+
+PARTUUID=d34db33f-02
+
+36-RENICIAR Y LISTO.
+
+sudo reboot
+
+37-AHORA PODEMOS ASIGNARLE UNA IP FIJA Y BORRAR LA IP DE cmdline.txt 
+
+sudo nano /etc/dhcpcd.conf
+
+
+interface eth0
+static ip_address=192.168.2.106/24
+static routers=192.168.2.1
+static domain_name_servers=190.113.220.18 8.8.8.8
+
+*Reiniciar pi
+sudo reboot
+
+*Confirmar la ip con:::
+ifconfig eth0
+
+*Ahora ir al modem para reservar la ip del raspberry(192.168.2.106):::
+
+-En client list/DHCP Server, en Address reservaction dar en add y rellenar los campos:
+-Para saber la mac tipear 
+cat /sys/class/net/eth0/address
+
+Name:raspberry
+IP Address:192.168.2.106
+MAC Address: (MAC ADDRESS DE LA RPI4)
+
+
+
+-APLICAR.
+
+
+38-TEST DE LECTURA Y ESCRITURA SSD
+
+sudo curl https://raw.githubusercontent.com/TheRemote/PiBenchmarks/master/Storage.sh | sudo bash
+
+
+******************************************************************************************************
+/////////////////////////////////////   ACTIVAR VNC     /////////////////////////////////////////
+*********************************************************************************************************
+
+
+1- (VAMOS A ACTIVAR VNC)-ESCRIBIR EN LA VENTANA DE PUTTY
+
+sudo raspi-config
+
+2-ENTRAR A Interfacing Options Y ACTIVAR VNC.
+
+3-EN WINDOWS DESCARGAR Y ABRIR VNC-VIEWER - STANDALONE EXE X64
+
+https://www.realvnc.com/en/connect/download/viewer/
+
+4-DAR EN ARCHIVO > NUEVA CONEXIÓN Y EN ESA VENTANA COLOCAR LA IP DE RASPBERRY
+
+VNC Server: 192.168.2.106
+Nombre: pi
+
+5-INICIAR "PI" Y  COLOCAR EL USER Y PASS (pi/raspberry), MARCAR CHECK 
+RECORDAR CONTRASEÑA.
+
+
+10-INICIARÁ EL RASPBERRY CON VNC:
+* EN VENTANA WARNING DARLE OK
+* DARLE SIGUIENTE Y COLOCAR EL PAIS, LENGUAGE Y HORARIO.
+* CAMBIAR CONTRASEÑA, PARA PRUEBA VOY A PONER 123456
+* MARCAR EL CHECK DE SCREEN (si tiene borde negro)
+* REINICIAR
+
+17-IR AL ICONO DE RASPBERRY > PREFERENCIAS > CONFIGURACIÓN DE RASPBERRY
+
+18-EN SET RESOLUTION CAMBIAR A 1280X720 60HZ Y REINICIAR
+
+19-AHORA SI PODEMOS ACTUALIZAR LA RPI4
+
+sudo apt-get update
+
+sudo apt-get upgrade
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

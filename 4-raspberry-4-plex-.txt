@@ -1,0 +1,53 @@
+1-AGREGAREMOS LOS REPOSITORIOS
+
+echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sources.list.d/plexmediaserver.list
+
+curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add -
+
+2-ACTUALIZAMOS
+
+sudo apt-get update
+
+3-VAMOS A INSTALAR ESTE PAQUETE
+
+sudo apt install apt-transport-https
+
+4-INSTALAMOS EL SERVIDOR PLEX
+
+sudo apt install plexmediaserver
+
+5-VER SI ESTA INSTALADO PLEX SERVER
+
+sudo systemctl status plexmediaserver
+
+
+6-PUEDES ACCEDER A PLEX PONIENDO EN EL NAVEGADOR
+
+http://TU-IP-DE-RPI4:32400/web/index.html
+
+
+******INSTALACIÓN MANUAL DE PLEX SERVER*********
+
+1-DESCARGAR LA VERSIÓN DE PLEX ARMv7
+
+https://www.plex.tv/es/media-server-downloads/
+
+2-NOS COLOCAMOS EN CARPETA DESCARGAS
+
+cd /home/pi/Downloads
+
+2-INSTALARLO
+
+sudo dpkg -i plexmediaserver_1.18.3.2156-349e9837e_armhf.deb
+
+3-ELIMINAR LO DESCARGADO
+
+sudo rm plexmediaserver_1.18.3.2156-349e9837e_armhf.deb
+
+***DETENER SERVIDOR PLEX***
+
+sudo systemctl stop plexmediaserver
+
+***REINICIAR SERVIDOR PLEX***
+
+sudo systemctl restart plexmediaserver

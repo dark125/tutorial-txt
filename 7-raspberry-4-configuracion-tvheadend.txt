@@ -1,0 +1,308 @@
+
+1-ACCEDER A TVHEADEND PONIENDO EN EL NAVEGADOR 192.168.2.106:9981
+
+LANGUAGE 1: ENGLISH(US)
+LANGUAGE 2: SPANISH
+LANGUAGE 2: ENGLISH(US)
+
+2-RELLENAR:
+
+ALLOWED NETWORK: 0.0.0.0/0
+
+administrator login++++++
+ADMIN USERNAME: alan1
+ADMIN PASSWORD:alan1
+
+user login+++++
+
+USERNAME: TV
+PASSWORD: TV
+
+3-CERRAMOS LA VENTANA.
+
+11-IR A Conguración >>General>>Base
+
+*Y COLOCAR en 
+default view level: expert
+
+4-Acá en el recuadro “Channel icon path:” hemos colocado una ruta que no existe,
+pero lo vamos a crear.
+
+file:///home/pi/guia/logos-peru/%C.png
+
+5-guardamos.
+
+
+6.crear carpeta
+
+sudo mkdir -m 1777 /home/pi/guia
+
+
+DESCARGAR LOS LOGOS DE AQUI
+
+https://github.com/dark125/logos-peru
+
+7-COPIAR CARPETA DE LOGOS
+
+sudo cp -R /home/pi/Downloads/logos-peru /home/pi/guia
+
+8-permisos
+
+sudo chown -R pi:video /home/pi/guia
+
+9-Primero vamos a agregar el usuario hts al grupo video
+
+sudo adduser hts video
+
+10-agregamos nuestro usuario al grupo video, en mi caso mi usuario es pi:
+
+adduser pi video
+
+11-descargar las frecuencias
+
+https://github.com/dark125/muxes-peru
+
+•Como podemos ver hay tres archivos:
+*pe-lima ====> contiene los muxes de los canales que yo veo.
+*pe-Peru ====> contiene los muxes de todos los canales de Perú.
+*pe-lim-Lima ====> contiene los muxes de todos los canales de Lima.
+
+12-COPIAR MUXES EN ESTAS DOS RUTAS
+
+/usr/share/tvheadend/data/dvb-scan/isdb-t/
+
+/usr/share/dvb/isdb-t/
+
+-Comando
+
+sudo cp /home/pi/Downloads/muxes/pe-Lima-2 /usr/share/dvb/isdb-t
+
+sudo cp /home/pi/Downloads/muxes/pe-Lima-2 /usr/share/tvheadend/data/dvb-scan/isdb-t
+
+13.-Necesitamos reiniciar Tvheadend:
+
+sudo systemctl restart tvheadend
+
+
+14- Nos ubicamos en la pestaña EPG Grabber y quitamos el check a todos los recuadros.
+
+15- vamos a configuration >>DVB inputs >> TV adapters
+
+•Activamos el check de Enabled/Habilitado.
+•Descativamos Over-the-air EPG /Guía a través del aire
+
+16-CREAREMOS NUESTRA RED TDT
+
+Conguración->DBV Inpurts->Network.
+
+•Damos click al botón add, nos aparecerá una pequeña ventana, ahí elegimos ISDB-T Network.
+
+•Inmediatamente después nos saldrá otra ventana, en la opción “Pre-defined muxes:”, debemos elegir el archivo
+ de muxes que copiamos antes.
+•Network name: TDT
+•Pre-defined muxes: pe:pe-Lima-2
+•Provider network name: PERU TDT
+•Network discovery: New muxes + changed muxes
+•Character set: UTF-8
+•EIT time offset: Local (server) time
+•Ahora le damos al botón create.
+
+17-Vincular la “Network” TDT con el Sintonizador.
+
+•Vinculamos esta “Network” recién creada con el sintonizador TDT del equipo.
+•En el panel lateral, DVB Inputs >>en la opción Networks/Redes elegir la red que hemos creado.
+•Recuerda que debes darle a guardar.
+
+18.-Ya podemos ver como se van creando los servicios.
+
+• Pestaña DVB Inputs >> Muxes
+
+• En la pestaña SERVICES, Es común que no se creen todos los servicios,
+así que tenemos que forzar el escaneo varias veces, hasta que nos aparezca todos.
+
+• En la pestaña Networks >> Forzaremos el escaneo seleccionando la network TDT y dándole click al botón Force Scan,
+así lo tenemos que hacer varias veces hasta que nos aparezca todos los servicios. Por ejemplo, yo
+tuve que hacerlo 4 veces para que aparecieron todos los servicios.
+
+
+19-PESTAÑA SERVICES
+
+•Seleccionamos los servicios para poder mapear los canales,
+por ejemplo hay muxes que tienen canal hd y sd, solo vamos a seleccionar
+los canales hd.
+•Ahora le damos click en Map selected services para que comience a crear los canales.
+
+•Va a salir una pequeña ventana, rellenarlo de esta manera:
+
+Map encrypted services: ✓
+
+20-PESTAÑA CHANNELS
+
+•Si vamos a la pestaña channels podemos ver los canales que se han creado.
+•Hay canales que no tienen nombres, estan en minúsculas o tienen caracteres extraños, para
+corregir eso vamos editar sus nombres conforme estan nombradas las imágenes que estamos
+usando como logos, es decir, las imágenes que se ubican en /home/pi/guia/logos-peru
+•Para saber de que canal se trata debemos darle click al icono que esta al comienzo de cada canal,
+ese que representa el “play”, al hacerlo nos descargará un archivo que abriremos con VLC.
+
+***EDITAR LOS NOMBRES***
+
+•Para editar los nombres, seleccionamos el canal y le damos a Edit.
+•En la ventana colocar el nombre en el recuadro “Name”, desactivar Automatically name from
+network y darle a guardar. Hacemos el mismo procedimiento para cada canal.
+
+
+---HAY UN ERROR EN AL AUDIO DE WILLAX TV----
+
+*ALGUNAS APPS NO REPRODUCIRÁN EL CANAL WILLAX DEBIDO AL ERROR DE AUDIO.
+
+*PARA CORREGIRLO DEBEMOS EXCLUIR LOS AUDIOS DAÑADOS.
+
+*VAMOS A LA PESTAÑA Stream>>>Audio Stream Filters y ahí dar click en agregar (add),
+UNA VEZ QUE SALE UNA VENTANA RELLENARLO DE ESTA MANERA:
+
+Enabled:✓
+Stream type: AAC
+Language: ANY
+Service: TDT/575.143MHz/WILLAC HD
+Stream index: 2
+PID:0
+Action: IGNORE
+
+*CLICK EN CREATE
+
+*HACER ESO DOS VECES MÁS, SOLO CAMBIAR EL Stream index asi:
+
+Stream index: 3
+Stream index: 4
+
+
+
+********************************************************
+        PASOS NECESARIOS PARA CREAR NUESTRA RED IPTV
+**********************************************************
+
+1.-Como nuestro proveedor nos proporciona una lista m3u, cuyos canales son transmisiones HLS
+(m3u8), debemos convertirlo a MPEG-TS, ya que Tvhedend no soporta hls stream.
+
+#EXTM3U
+#EXTINF:-1 tvg-logo="https://i.imgur.com/nRpzSBt.png" tvg-id="" tvg-chno="1" group-title="CINE&SERIES",A&E[1080]
+http://192.168.2.106:8090/AE-FULLHD.m3u8
+
+2.-Ahora editaremos una lista m3u.
+
+•En windows, descargaremos perl y procederemos con la instalación.
+http://strawberryperl.com/
+
+•Desgaremos los script perl
+https://github.com/dark125/Pipe
+•En el enlace incluyo los script sin headers y con headers, úselos según sus necesidades.
+
+•Todos los archivos descargados deben colocarlo en una misma carpeta
+
+•Vamos usar un script de perl para agregar un texto antes de todas las url’s de nuestra lista.
+pipe:///usr/bin/mpeg -headers "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US)
+AppleWebKit/534.20 (KHTML, like Gecko) Chrome/11.0.672.2 Safari/534.20" -loglevel fatal -re -i
+*Para esta lista es necesario usar un headers, para otras listas es probable que no sea necesario.
+
+•Para usar en otras listas:
+pipe:///usr/bin/mpeg -loglevel fatal -re -i
+
+•También vamos agregar un texto después de las urls
+-map 0 -c copy -metadata service_name=CLAROS -f mpegts pipe:1
+CLAROS=====> L e puedes colocar cualquier nombre.
+
+•Antes de ejecutar los scripts, primero debemos editarlos para colocar el nombre de nuestra lista
+m3u. Ábralos con el block de notas y cambie "lista-script-mexicano2.m3u" por el nombre de su lista.
+
+•Ahora si vamos a ejecutar los scripts, damos doble click en el archivo *.bat.
+
+
+3-En raspbian creamos una carpeta para poner ahi nuestra lista de canales m3u.
+
+sudo mkdir -m 1777 /home/pi/guia/canales
+
+**********************************************************************
+                 CREAREMOS NUESTRA RED IPTV
+**********************************************************************
+
+
+1-Conguración->DBV Inpurts->Network.
+•Le damos click al botón add y elegimos IPTV Automatic Network
+
+•Añadimos una nueva red de tipo IPTV Automática (signica que va a importar desde un M3U):
+*Crearemos una red iptv sin escaneo, para eso añadiremos un Service ID que generalmente es 1.
+Para más información, si es que no te funciona la ID de 1, puede ver como saber el Service ID de tu
+lista m3u en este sitio web
+https://tvheadend.org/projects/tvheadend/wiki/Automatic_IPTV_Network
+
+Network name: CLARO
+Create bouquet: (x) marcado
+Maximum # of input streams: 0
+Scan after creation:: (-) desmarcado
+URL:file:///home/pi/guia/canales/lista-script-mexicano3.m3u
+Maximum timeout (seconds): 15
+Character set: UTF-8
+SKip Startup Scan : (x) marcado
+EIT time oset: Local server time
+Re-fetch period (mins): 1, si no estas haciendo pruebas es mejor dejarlo por defecto en 60.
+Service ID: 1
+
+**URL:file:///home/pi/guia/canales/lista-script-mexicano3.m3u ===> Reemplazar por su usuario y su
+lista m3u**
+
+
+•Nota sobre el parámetro “Re-fetch period”. Indica cada cuanto tiempo debe releer el fichero M3U
+para configurar los cambios que detecte. Muy interesante ponerlo a ‘1min’ si estás haciendo
+pruebas.
+•En cuanto le des al botón “create” se irán creando los muxes y lo services.
+
+
+Nota: Como dije estamos creando una red iptv sin escaneo, también podemos crear una red con
+escaneo, donde tvheadend va analizando cada muxe y lo va agregando si esta activo. Puedes
+buscar más información en internet, ya que los parametros que se usen en ambos casos son
+diferentes.
+
+
+•El siguiente paso consiste en crear los canales. Entra en SERVICES, selecciona los canales de la
+Network CLARO y haz click en Map selected services
+•En parte de abajo vemos que los SERVICES cuentan con 10 páginas
+
+•Para hacer un poco más fácil el seleccionar los SERVICES, damos click sobre network, con eso se
+ordenarán por Network. Ahora para seleccionarlos le damos click al primer service que queremos
+seleccionar y teniendo shift presionado le damos click al último service, después lo mapeamos
+dando click en Map selected services, con ese método podemos seleccionar muchos services a la
+vez.
+
+•Click en Map selected services (Mapear servicios selecionados).
+
+
+•Nos va a salir una pqeueña ventan, En esta ventana marcamos el recuadro de Create network name tags,
+esa opción es para crear los grupos de canales que estan en nuestra lista m3u.
+•Damos click en Map services para comenzar a crear los canales y tags (grupos).
+
+•Si nos vamos a la pestaña channels veremos los canales que se han creado.
+Conguration>>>Channel/EPG>>>Channels
+
+•Al colocarnos en la pestaña Channel Tags veremos los grupos de los canales.
+Conguration>>>Channel/EPG>>>Channel Tags
+
+
+*************************************************************************************
+          CREAREMOS UN GRUPO PARA LOS CANALES TDT
+************************************************************************************
+
+•Para tener todos nuestros canales TDT dentro de un grupo crearemos un tags de nombre PERU.
+•Damos click al botón Add, en Name colocamos PERU y click en Create.
+
+
+•En la pestaña Channels seleccionamos todos los canales de la TDT.
+Conguration>>>Channel/EPG>>>Channels
+•Con los canales seleccionados le damos click en Edit.
+
+•En la ventana que saldrá marcamos la opción Tags, al costado buscamos PERU, lo marcamos y lo
+guardamos.
+
+
+
+

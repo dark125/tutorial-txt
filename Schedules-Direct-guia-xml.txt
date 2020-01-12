@@ -1,0 +1,88 @@
+
+A))INSTALAR tv_grab_zz_sdjson_sqlite PARA USARLO CON TVHEADEND 
+
+1-INSTALAR LAS UTILIDADES NECESARIAS
+
+sudo apt-get install xmltv-util
+sudo apt-get install liblwp-useragent-determined-perl
+
+2-ACTUALIZAR EL tv_grab_zz_sdjson_sqlite. LO DESCARGAMOS DESDE ESTE LINK
+
+https://github.com/garybuhrmaster/tv_grab_zz_sdjson_sqlite
+
+3-COLOCARSE EN LA CARPETA DESCARGAS
+
+cd /home/pi/Downloads
+
+**DESCOMPRIMIRLO**
+
+unzip tv_grab_zz_sdjson_sqlite-master.zip
+
+**NOS PONEMOS EN LA CARPETA QUE DESCOMPRIMIMOS**
+
+cd tv_grab_zz_sdjson_sqlite-master
+
+4-MOVER Y REEMPLAZAR
+
+sudo mv tv_grab_zz_sdjson_sqlite /usr/bin/
+
+5-CAMBIAR PERMISOS
+
+sudo chown root:root /usr/bin/tv_grab_zz_sdjson_sqlite
+sudo chmod 755 /usr/bin/tv_grab_zz_sdjson_sqlite
+
+**REINICIAR TVHEADEND**
+
+
+6-ENTRAR COMO USUARIO HTS
+
+sudo su - hts
+
+7-TIPEAR
+
+tv_grab_zz_sdjson_sqlite --manage-lineups
+
+8-LE PIDIRÁ USUARIO Y CONTRASEÑA 
+
+9- AHORA AGREGUE LAS LINEUPS(PROVEDORES) Y SIGA LOS PASOS.
+
+10-SELECCIONE 4 PARA INICIALIZAR LA BASE DE DATOS
+
+11- Elija el nombre de la base de datos(DEJARLO PREDETERMINADO-SOLO DARLE ENTER)
+
+/home/hts/.xmltv/SchedulesDirect.DB
+
+12-LES VA A PREGUNTAR SI DESEA GUARDAR LA CONTRASEÑA, DARLE EN YES.
+
+14-EJECUTE ESTO 
+
+tv_grab_zz_sdjson_sqlite --configure
+
+15-INGRESE LA RUTA DE BASE DE DATOS(ENTER-ELEGIR EL PREDETERMINADO)
+
+/home/hts/.xmltv/SchedulesDirect.DB
+
+16-RESPONDA SI PARA AGREGAR LINEUPS A SU DATABASE. (YES)
+
+17-HABILITE EN TVHEADEND (check enable)
+
+internal XMLTV Multinational (schedules Direct JSON web services with SQLite DB)
+
+18-AGREGAR EXTRA ARGUMENTS EN TVHEADEND
+
+--config-file /home/hts/.xmltv/tv_grab_zz_sdjson_sqlite.conf --days 9
+
+
+19-SI QUIERE GENERAR UN ARCHIVO XML, ejecute lo siguiente:
+
+
+sudo tv_grab_zz_sdjson_sqlite --config-file /home/hts/.xmltv/tv_grab_zz_sdjson_sqlite.conf --days 2 --output /home/pi/Downloads/zz.xml
+
+
+*--days = número de días para la guia.
+*--output = donde quiere que se guarde el archivo generado.
+
+*O para forzar la descarga
+
+sudo tv_grab_zz_sdjson_sqlite --config-file /home/hts/.xmltv/tv_grab_zz_sdjson_sqlite.conf --force-download --days 2 --output /home/pi/Downloads/zz.xml
+

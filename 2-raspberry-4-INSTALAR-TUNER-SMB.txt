@@ -1,0 +1,140 @@
+1-INSTALAR DRIVER DE SINTONIZADOR:
+
+*Nos colocamos en la carpeta descargas
+cd /home/pi/Downloads
+*Descargamos
+wget http://repo.huayra.conectarigualdad.gob.ar/huayra/pool/non-free/f/firmware-siano-rio/firmware-siano-rio_1.0_all.deb
+*Instalamos
+sudo dpkg -i firmware-siano-rio_1.0_all.deb
+*Podemos verificar que se haya copiado en la ruta
+/lib/firmware/isdbt_rio.inp
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*OTRA ALTERNATIVA DE INSTALACIÓN ES COPIARLO A LA CARPETA firmware(*.deb ya debe estar descomprimido)
+sudo cp isdbt_rio.inp /lib/firmware/
+*-Darle Permisos
+sudo chmod 644 /lib/firmware/isdbt_rio.inp
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+2.-CONECTAR EL SINTONIZADOR USB Y TIPEAR
+sudo apt-get install dvb-apps
+
+3-NOS SITUAMOS EN LA CARPETA DESCARGAS
+cd /home/pi/Downloads
+
+4-CREAMOS UN ARCHIVO 
+nano channels.conf
+
+5-PEGAMOS LAS FRECUENCIAS (las frecuencias esten el archivo frecuencias.txt)
+
+6-CTRL + X (SALIR) Y "S" PARA GUARDAR
+
+7-ESCANEAMOS LAS FRECUENCIAS
+
+scan channels.conf > canales.conf
+
+8-PARA PROBAR QUE SE REPRODUCEN, ABRIMOS canales.conf CON VLC.
+
+
+*************************************************************************
+                COMPARTIR CARPETA DE RPI4 CON WINDOWS
+************************************************************************
+
+1-VAMOS A COMPARTIR CARPETA DE RASPBERRY PI CON WINDOWS
+
+*Instalar samba
+sudo apt-get install samba samba-common-bin
+*Crear carpeta que se va a compartir
+sudo mkdir -m 1777 /home/pi/Desktop/Samba
+sudo mkdir -m 1777 /home/pi/Desktop/Samba/Raspi
+---1=prevenir que borren carpeta por accidente
+---777=permisos totales a la carpeta
+*Editar samba
+sudo nano /etc/samba/smb.conf
+
+*En [global] buscar wins y ponerlo en yes para soporte de windows::
+wins support = yes
+
+*Ir hasta el final y poner esto
+
+[Raspi]
+   comment = Pi Share Directory
+   path = /home/pi/Desktop/Samba/Raspi
+   browseable = Yes
+   writeable = Yes
+   only guest = no
+   create mask = 0777
+   directory mask = 0777
+   public = no
+
+*Guardar smb.conf con ctrl+x y depués "s".
+
+*Asignar usuario pi a samba
+sudo smbpasswd -a pi
+colocar una contraseña y confirmar
+(en mi caso 123456)
+
+*Reiniciar samba
+sudo systemctl restart smbd
+
+2-AHORA EN WINDOWS 10
+
+EN EL ESCRITORIO
+>>CLICK DERECHO>>CREAR ACCESO DIRECTO
+Y LO COMPLETAMOS ASI:
+Escriba la ubicación del elemento: \\192.168.2.106\Raspi
+En nombre: RASPBERRYPI
+
+y Aceptar.
+
+(Si te pide contraseña, colocarle la que le hemos puesto a SMB-123456)
+
+
+*****************************************************************
+       COMPARTIR CARPETA DE WINDOWS10 CON RASPBERRY
+*****************************************************************
+
+
+1-VAMOS A COMPARTIR CARPETA DE WINDOWS10 CON RASPBERRY
+
+++PARA ESTO YA DEBERIAMOS TENER UN CARPETA COMPARTIDA DESDE WINDOWS++
+++EL NOMBRE DE MI CARPETA COMPARTIDA DESDE WINDOWS ES "Nueva carpeta (2)"++
+++HAY ESPACIOS EN EL NOMBRE DE MI CARPETA, POR ESO SE COLOCA \040 POR CADA ESPACIO QUE HAYA++
+
+*Crear carpeta en raspberry
+sudo mkdir -m 1777 /home/pi/Desktop/Samba/Windows
+*Vamos hacer que se automonte al iniciar raspbian
+sudo nano /etc/fstab
+*Pegar al final y guardar.
+
+//192.168.2.133/Nueva\040carpeta\040(2) /home/pi/Desktop/Samba/Windows cifs username=alan_,password=cualquierpass,uid=pi,gid=pi,file_mode=0777,dir_mode=0777,iocharset=utf8,x-systemd.automount,x-systemd.device-timeout=8,nofail 0 0
+
+
+username=alan_ >>>>> REEMPLAZAR POR SU USUARIO DE WINDOWS (lo puedes ver desde este link C:\Users)
+password=cualquierpass  >>>>> REEMPLAZAR POR SU CONTRASEÑA DE WINDOWS
+//192.168.2.133/Nueva\040carpeta\040(2)  >>>>> REEMPLAZAR POR SU IP Y NOMBRE DE CARPETA DE WINDOWS
+
+
+2-MONTAR LA CARPETA
+
+sudo mount -a para montar la carpeta.
+
+3-REINICIARLO Y COMPROBAR QUE SE AUTOMONTA
+
+sudo reboot 
+
+++++SI SU CARPETA  NO SE MONTA AL INCIO, ENTONCES DEBEMOS ACTIVAR ESPERAR RED
+QUE SE ENCUENTRA EN CONFIGURACION DE RASPBERRY PI++++
+
+***PARA REINICIAR SAMBA***
+
+sudo systemctl restart smbd
+
+***PARA LIMPIAR LA TERMINAL***
+
+ctrl + l 
+
+clear + enter
+
+
+

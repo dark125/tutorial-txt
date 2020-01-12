@@ -1,0 +1,55 @@
+DE AQUÍ SE PUEDEN VER LAS VERSIONES DISPONIBLES DE TVHEADEND
+
+https://phillw.net/mark/incoming/deb_packages/tvheadend/
+
+YA SABEMOS QUE ES RASPIAN Buster, ENTONCES VAMOS A DESCARGAR TVHEADEND, PONEMOS:
+
+cd /home/pi/Downloads
+
+HAY DOS VERSIONES QUE PODEMOS INSTALAR (ESTABLE 4.2 Y INESTABLE 4.3)
+
+****VERSIÓN ESTABLE****
+
+1-LUEGO PARA DESCARGAR
+
+wget https://phillw.net/mark/incoming/deb_packages/tvheadend/tvheadend-dbg_4.2.8-37~g53d84ef7e~raspbianbuster_armhf.deb
+
+wget https://phillw.net/mark/incoming/deb_packages/tvheadend/tvheadend_4.2.8-37~g53d84ef7e~raspbianbuster_armhf.deb
+
+
+2-INSTALAMOS LO DESCARGADO
+
+sudo dpkg -i tvheadend*.deb
+
+3-Si aparece un error de falta de paquetes ejecutar
+
+sudo apt install -f
+
+
+4-COLOCAR UN USUARIO Y UNA CONTRASEÑA
+
+user:TV1
+pass:TV1
+
+****VERSIÓN INESTABLE****
+
+1-DESCARGAMOS LA VERSIÓN INESTABLE
+
+wget https://phillw.net/mark/incoming/deb_packages/tvheadend/tvheadend-dbg_4.3-1857~g221c29b40~raspbianbuster_armhf.deb
+
+wget https://phillw.net/mark/incoming/deb_packages/tvheadend/tvheadend_4.3-1857~g221c29b40~raspbianbuster_armhf.deb
+
+
+2-INSTALAMOS LO DESCARGADO
+
+sudo dpkg -i tvheadend*.deb
+
+3-Si aparece un error de falta de paquetes ejecutar
+
+sudo apt install -f
+
+
+4-COLOCAR UN USUARIO Y UNA CONTRASEÑA
+
+user:TV1
+pass:TV1

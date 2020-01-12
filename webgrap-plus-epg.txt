@@ -1,0 +1,166 @@
+1-Instalar mono
+
+sudo apt-get install mono-runtime libmono-system-data4.0-cil libmono-system-web4.0-cil
+
+2-Descargar version para windows
+
+http://webgrabplus.com/download
+
+3-Tambien descargar la version beta
+
+http://www.webgrabplus.com/download/sw/v2.1.9
+
+4-CREAR CARPETA
+
+sudo mkdir -m 1777 /home/pi/guia/WebgrabPlus
+
+5-COPIAR LOS ARCHIVOS DESCARGADOS A LA CARPETA CREADA.
+
+WebGrabPlus_V2.1_install.tar.gz
+
+WebGrabPlus_V2.1.9_beta_install.tar.gz
+
+6-SITUARSE EN /home/pi/guia/WebgrabPlus
+
+cd /home/pi/guia/WebgrabPlus
+
+7-DESCOMPRIMIR el archivo
+
+tar -zxvf WebGrabPlus_V2.1_install.tar.gz
+
+
+8-COLOCARSE EN LA CARPETA .wg++
+
+cd .wg++
+
+9-VAMOS A INSTALAR WEBGRAB
+
+./install.sh
+
+7-DESCOMPRIMIR el archivo para actualizar
+
+tar -zxvf WebGrabPlus_V2.1.9_beta_install.tar.gz
+
+8-COPIAR mi.tv.ini y mi.tv.channels.xml a la carpeta "siteini.user"
+
+9-ABRIR EL ARCHIVO WebGrab++.config.xml Y LLENARLO ASI:
+
+
+  <filename>/home/pi/guia/epg/guia.xml</filename>
+  <mode></mode>
+  <postprocess grab="y" run="y">n</postprocess>
+  <user-agent>Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20100101 Firefox/29.0</user-agent>
+  <logging>on</logging>
+  <retry time-out="5">4</retry> 
+  <timespan>6</timespan>
+  <update>f</update>
+
+10-CREAR CARPETA /home/pi/guia/epg/
+
+sudo mkdir -m 1777 /home/pi/guia/epg/
+
+11-PARA EJECUTARLO
+
+./run.sh
+
+
+12-VAMOS A CREAR UN SCRIP PARA EJECUTAR WEBGRABPLUS AUTOMATICAMENTE
+
+-Creamos la carpeta donde va a estar el script
+
+sudo mkdir -m 1777 /home/pi/guia/Scripts
+
+-Ahora crearemos el script
+
+nano /home/pi/guia/Scripts/webgrabplus.sh
+
+-Copiamos esto
+
+#!/bin/bash
+/home/pi/guia/Scripts/webgrabplus.sh
+
+
+-Lo hacemos ejecutable
+
+sudo chmod 775 /home/pi/guia/Scripts/webgrabplus.sh
+
+-Cambiamos el usuario y grupo
+
+sudo chown pi:root /home/pi/guia/Scripts/webgrabplus.sh
+
+
+
+13-CREAREMOS UNA TAREA PROGRAMADA QUE SE EJECUTARA LOS DIAS MARTES Y VIERNES 
+A LAS 3:00 AM
+
+14-TIPEAMOS
+
+crontab -e
+
+15-ELEGIMOS NUESTRO EDITOR PREFERIDO, YO VOY A ELEGIR nano (1 + enter)
+
+16-AHORA NOS VAMOS HASTA ABAJO Y ESCRIBIMOS ESTO.
+
+0 3 * * 2,5 /home/pi/guia/Scripts/webgrabplus.sh
+
+
+***********************************************************************************
+AHORA VAMOS A HACER QUE TVHEADEND LEA LA GUIA CREADA
+**********************************************************************************
+
+
+1-DESCARGAR EL GRABBER DESDE ESTE LINK
+
+https://github.com/dark125?tab=repositories
+
+
+2-AHORA VAMOS A EDITARLO
+
+-Reemplazar esto
+
+xmltv_file_location=~/wg ++/guide.xml
+
+por
+
+xmltv_file_location=/home/pi/guia/epg/guia.xml
+
+
+3-Mover lo descargado a la carpeta bin
+
+cd /home/pi/Downloads
+
+sudo mv tv_grab_wg_plus /usr/bin/
+
+4-CAMBIAR PERMISOS
+
+sudo chown root:root /usr/bin/tv_grab_wg_plus
+sudo chmod 755 /usr/bin/tv_grab_wg_plus
+
+sudo chmod +x /usr/bin/tv_grab_wg_plus
+
+4-REINICIAR TVHEADEND
+
+sudo systemctl restart tvheadend
+
+5--HABILITE EN TVHEADEND tv_grab_wg_plus(check enable)
+
+6-VAMOS A LA PESTAÑA channel/EPG >>>EPG Grabber
+
+-En la sección internal grabber, vamos a hacer que tvheadend ejecute el grabber LOS DIAS MARTES Y VIERNES 
+A LAS 4:00 AM, se ejecutará una hora despues que webgrab plus.
+
+PEGAR ESTO:
+**Cron multi-line:
+
+# Ejecutar (04:00 AM martes y viernes)
+0 4 * * 2,5 
+
+
+
+
+
+
+
+
+
+

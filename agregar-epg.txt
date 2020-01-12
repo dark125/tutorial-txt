@@ -1,0 +1,23 @@
+Si tenemos una fuente de epg/guia de canales y queremos agregarle a nuestro archivo m3u
+podemos usar el script perl "reemplazar-epg.pl"
+
+
+*Mi archivo m3u tiene este formato
+
+#EXTM3U
+#EXTINF:-1 tvg-logo="https://i.imgur.com/nRpzSBt.png" tvg-id="aemundo.co" tvg-chno="" group-title="CINE&SERIES",A&E[1080]
+http://192.168.2.106:8090/AE-FULLHD.m3u8
+
+*Donde tvg-id="aemundo.co" es la imagen que quiero reemplazar.
+
+*Debemos editar nuestro script perl para que adapte a nuestras necesidades. El script el lado izquierdo muestra la tv-id que contiene nuestro archivo m3u
+y al lado derecho tiene tv-id por la cual vamos a reemplazarlos.
+
+*Tambien debemos editar el archivo bat
+
+perl reemplazar-epg.pl < lista-script-mexicano2.m3u > lista-script-mexicano3.m3u
+
+<lista-script-mexicano2.m3u> ======> reemplazarlo por el nombre de su archivo m3u
+lista-script-mexicano3.m3u ======> reemplazarlo por el nombre que quiere que tenga su archivo de salida.
+
+

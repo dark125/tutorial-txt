@@ -1,0 +1,97 @@
+
+1-INSTALAR PHP Y APACHE2
+
+sudo apt-get install apache2
+
+*Instalar php
+
+sudo apt-get install php libapache2-mod-php php-mbstring php-curl php-cli
+
+*agregar usuario pi al grupo www-data
+sudo usermod -a -G www-data pi
+
+*Cambiar el grupo al que pertenece la carpeta www
+sudo chgrp -R www-data /var/www/html
+
+*saber si existe el grupo www-data
+cat /etc/group | grep www-data
+
+*Dar permisos de escritura a grupo www-data
+
+sudo chmod -R ug+w /var/www/html/
+sudo find /var/www/html -type d -exec chmod 2775 {} \;
+sudo find /var/www/html -type f -exec chmod ug+rw {} \;
+
+
+2-CAMBIAR PUERTOS DE APACHE
+
+sudo nano /etc/apache2/ports.conf 
+
+*PONER
+
+Listen 8090
+
+ssl : 449
+
+*AQUI TAMBIEN CAMBIAR PUERTO
+
+sudo nano /etc/apache2/sites-available/000-default.conf 
+
+--BUSCAR Y PONER
+
+<VirtualHost *:8090>
+
+3-HABILITAR .HTACCESS
+
+sudo nano /etc/apache2/apache2.conf
+
+*PONER ESTO
+
+<Directory /var/www/html>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+
+4-LUEGO ACTIVAR:
+
+sudo a2enmod rewrite
+
+
+5-REINICIAR APACHE
+
+sudo systemctl restart apache2.service
+
+
+6-MOSTRAR ERRORES EN PHP 
+Editamos el archivo php.ini con este comando en la terminal:
+
+sudo nano /etc/php/7.0/apache2/php.ini
+
+Lo cambiamos por display_errors = On
+
+7-PROBAR PHP
+
+sudo nano /var/www/html/info.php
+
+*Escribir
+
+<?php
+
+phpinfo();
+
+*Guardar y entrar en http://192.168.2.106:8090/info.php
+
+
+8-COPIAR MI PHP A LA CARPETA /VAR/WWW/HTML
+
+sudo cp -R /home/pi/Desktop/Samba/Raspi/SANALES-CUIDAR-API/* /var/www/html
+sudo cp /home/pi/Desktop/Samba/Raspi/SANALES-CUIDAR-API/.htaccess /var/www/html
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+SI QUIERE PUEDE VOLVER A DAR PERMISOS Y CAMBIAR USURIO Y GRUPO A HMTL
+sudo chmod 775 -R /var/www/html
+sudo chown -R pi:www-data /var/www/html
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

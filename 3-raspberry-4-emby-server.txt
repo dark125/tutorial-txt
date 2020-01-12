@@ -1,0 +1,361 @@
+1-VER LA VERSION QUE VAMOS A USAR
+https://emby.media/linux-server.html
+
+2-PARA SABER LA VERSIÓN A DESCARGAR, ABRIMOS LA TERMINAL Y PONEMOS:
+
+cat /proc/cpuinfo
+
+3-YA SABEMOS QUE ES Debian Armv7 (armhf), ENTONCES VAMOS A DESCARGAR EMBY SERVER Armv7 (armhf), PONEMOS:
+
+cd /home/pi/Downloads
+
+4-LUEGO PARA DESCARGAR
+
+wget https://github.com/MediaBrowser/Emby.Releases/releases/download/4.3.0.30/emby-server-deb_4.3.0.30_armhf.deb
+
+5-INSTALAMOS LO DESCARGADO
+
+sudo dpkg -i emby-server-deb_4.3.0.30_armhf.deb
+
+6-ELIMINAMOS EL ARCHIVO QUE HEMOS DESCARGADO PORQUE YA ESTA INSTALADO
+
+sudo rm emby-server-deb_4.3.0.30_armhf.deb
+
+7-AHORA PODEMOS ACCEDER A EMBY PONIENDO EL NAVEGADOR ESTO:
+
+http://TU.IP:8096 (en mi caso es http://192.168.2.106:8096)
+
+8.-CONFIGURAMOS EMBY SERVER Y AÑADIMOS UNA BIBLIOTECA
+
+elegir idioma español(mexico)
+
+username:Alan-emby
+
+New password: 105432
+new password confirm: 105432
+
+
+INSTALACION RCLONE
+
+1-NOS UBICAMOS EN LA CARPETA DESCARGAS
+
+cd /home/pi/Downloads
+
+2-VERIFICAR ULTIMA VERSION DESDE AQUI
+
+https://rclone.org/downloads/
+
+3-DESCARGAMOS RCLONE
+
+wget https://downloads.rclone.org/v1.50.2/rclone-v1.50.2-linux-arm.deb
+
+4-INSTALAMOS
+
+sudo dpkg -i rclone-v1.50.2-linux-arm.deb
+
+5-BORRAMOS LO DESCARGADO
+
+rm rclone-v1.50.2-linux-arm.deb
+
+
+
+
+CREAR CLIENTE ID
+
+1-ENTRAR A ESTE LINK (PONER TU USER Y PASS)
+
+https://console.developers.google.com/
+
+2-CREAR UN PROYECTO
+
+Seleccionar un proyecto → Nuevo proyecto
+
+3-DARLE UN NOMBRE Y LUEGO CLICK EN CREAR
+
+NOMBRE: emby-server
+
+4-ACTIVAR API DRIVE
+
+Justo debajo de la parte superior seleccione + ACTIVAR APIS Y SERVICIOS
+
+- Buscar Drive
+- Seleccione la API de Google Drive
+- Pulsa Habilitar
+
+5-CREAR CREDENCIALES
+
+En el panel lateral izquierdo, seleccione Credenciales
+
+- - En el panel principal recibirás una advertencia sobre
+Recuerde configurar la pantalla de consentimiento de OAuth con información sobre su aplicación.
+
+- - Junto a la advertencia, seleccione CONFIGURAR PANTALLA DE CONSENTIMIENTO
+- - Complete el nombre de la aplicación: my-rclone
+
+- - Presiona Guardar
+
+Regrese a Credenciales en el panel lateral izquierdo y luego Credenciales en el menú superior dentro del panel principal
+- - Seleccione Crear credenciales → ID de cliente OAuth
+- - Seleccione Tipo de aplicación: Otro y establezca un nombre razonable: mi cliente rclone (o dejarlo por defecto)
+- - Presiona Crear
+
+CONFIGURACION DE RCLONE
+
+1-CREAR UN ARCHIVO DE CONFIGURACIÓN DE CONFIG
+
+rclone config
+
+2-CREAMOS UN NUEVO REMOTO CON "n"
+
+n)New remote
+
+n
+
+3-AHORA LE DAMOS UN NOMBRE
+
+gdrive
+
+4-ELEGIR EL SERVICIO DE LA NUBE, ELEGIRÉ 12 DE GDRIVE
+
+12
+
+5-AHORA NOS PIDE EL CLIENTE ID, lo ponemos
+
+
+6-DESPUES EL CLIENTE SECRET
+
+7-NOS PREGUNTA EL TIPO DE ACCESO
+
+1 (full acceso)
+
+7-NOS PREGUNTA POR CARPETA RAIZ, NO PONEMOS NADA SOLO LE DAMOS A ENTER
+
+ROOT_FOLDER_ID (en blanco)
+
+8-ESTO TAMBIEN LE DAMOS A ENTER
+
+SERVICE_ACCOUNT_FILE (en blanco)
+
+9-EN EDITAR CONFIGURACIÓN AVANZADO PONEMOS n
+
+Edit advanced config? (y/n)
+n
+
+10-USAR CONFIGURACIÓN AUTOMATICA (ponemos no para que nos ponga un enlace que podemos ponerle
+a en cualquier navegador)
+
+Use auto config?
+
+n
+
+11-COPIAR EL LINK Y PEGARLO EN UN NAVEGADOR
+
+12-ACCEDER CON USUARIO Y PASS
+
+13-LUEGO COPIAR EL CODIGO QUE HA APARECIDO Y PEGARLO EN RCLONE.
+
+14-NOS PREGUNTA SI ES UNA CONFIGURACIÓN DE UNIDAD DE EQUIPO, PONEMOS NO
+
+Configure this as a team drive?
+
+n
+
+15-ACEPTAR QUE LA CONFIGURACIÓN ESTE CORRECTA
+
+y
+
+16- SALIR DE RCLONE CONFIG
+
+q
+
+
+
+INSTALAR FUSE
+
+1-VAMOS A INSTALAR FUSE PARA MONTAR NUESTRO GDRIVE
+
+sudo apt-get install fuse
+
+2-DESCOMENTAMOS LA LÍNEA –allow-others O user_allow_other PARA PERMITIR
+ASUARIOS NO ROOT MONTAR UNIDADES
+
+sudo nano /etc/fuse.conf
+
+--Descomentamos
+
+# Allow non-root users to specify the allow_other or allow_root mount options.
+#--allow-others
+
+# Allow non-root users to specify the allow_other or allow_root mount options.
+#user_allow_other 
+
+--Debería quedar así
+
+# Allow non-root users to specify the allow_other or allow_root mount options.
+user_allow_other 
+
+3-REINICIAMOS
+
+sudo reboot
+
+
+
+MONTAR GDRIVE EN RPI4
+
+1-CREAREMOS LA CARPETA DONDE SE VA A MONTAR NUESTRO GDRIVE
+
+sudo mkdir -m 1777 /home/pi/Desktop/Samba/Gdrive
+
+2-CAMBIAR PROPIETARIO A CARPETA GDRIVE
+
+sudo chown pi:pi /home/pi/Desktop/Samba/Gdrive/
+
+3-PARA SABER DONDE SE GUARDO NUESTRO ARCHIVO rclone.conf
+
+rclone config file
+
+--Saldrá algo asi
+
+/home/pi/.config/rclone/rclone.conf
+
+
+4-AHORA MONTAREMOS NUESTRO GDRIVE
+
+rclone mount gdrive: /home/pi/Desktop/Samba/Gdrive --config=/home/pi/.config/rclone/rclone.conf --allow-other --buffer-size 64M --poll-interval 15s --timeout 1h --dir-cache-time 80h --umask 002 --vfs-cache-mode writes &
+
+
+5-AGREGAR USUARIO EMBY A GRUPO PI
+
+sudo usermod -a -G pi emby
+
+===PARA DESMONTAR GDRIVE USAMOS:====
+
+sudo fusermount -uz /home/pi/Desktop/Samba/Gdrive/
+
+===PARA REINICIAR SERVIDOR EMBY USAMOS:===
+
+sudo service emby-server restart
+
+
+AUTOMONTAR GDRIVE
+
+1-CAMBIAMOS LOS PERMISOS 
+
+sudo chmod 777 -R /etc/systemd/system
+
+2-VAMOS A CREAR EL ARCHIVO rclone.service
+
+sudo nano /etc/systemd/system/rclone.service
+
+3-PEGAMOS ESTO
+
+[Unit]
+Description=Google Drive (rclone)
+AssertPathIsDirectory=/home/pi/Desktop/Samba/Gdrive
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/rclone mount gdrive: /home/pi/Desktop/Samba/Gdrive \
+--config=/home/pi/.config/rclone/rclone.conf \
+--allow-other \
+--umask=002 \
+--buffer-size 64M \
+--vfs-cache-mode writes \
+--log-level INFO \
+--log-file /opt/rclone/logs/rclone.log \
+--poll-interval 15s \
+--dir-cache-time 300h \
+--timeout 1h \
+--rc \
+--rc-addr 127.0.0.1:5572
+ExecStop=/bin/fusermount -uz /home/pi/Desktop/Samba/Gdrive
+Restart=on-failure
+RestartSec=6
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target
+
+4-CREAMOS UNA CARPETA PARA LOS LOG
+
+sudo mkdir -m 1777 /opt/rclone/logs -p
+
+5-LO GUARDAMOS CON CTRL+X SEGUIDO DE UN SI Y ENTER.
+
+6-HABILITAMOS EL INICIO AUTOMÁTICO (tener en cuenta que cada vez que se haga una modificación al archivo rclone.service
+se debe aplicar este comando)
+
+systemctl daemon-reload
+
+7-LUEGO EJECUTAMOS ESTOS DOS COMANDOS (al ejecutar todos esos comandos te va pedir la contraseña de pi)
+
+systemctl start rclone.service
+
+systemctl enable rclone.service
+
+///LA CONFIGURACIÓN DE MONTAJE FUE SACADO DE ////
+
+https://forum.rclone.org/t/my-recommended-google-drive-and-plex-mount-settings-updated-6-mar-2019/6132
+
+
+MUY ATENTO A ESTO (ERROR DE rclone.service)
+
+1-ES POSIBLE QUE AL COPIAR LA CONFIGURACIÓN DESDE WINDOWS SE PRESENTE ALGUNOS ERRORES, SI TIENES DICHOS ERRORES
+VAMOS A VERIFICAR QUE NO HAYA NINGÚN CARACTER ADICIONAL 
+
+cd /etc/systemd/system/
+
+2-LUEGO MOSTRAR EL ARCHIVO rclone.service
+
+cat -vet rclone.service
+
+3-DEBEMOS VER ALGO COMO ABAJO, CON SÍMBOLO DE DOLAR AL FINAL DE CADA LINEA, SI APARECE DEBEMOS BORRARLO USANDO 
+
+cd /etc/systemd/system/
+
+sudo nano /etc/systemd/system/rclone.service
+
+TEXTO EJEMPLO CON SÍMBOLO DEL DOLAR AL FINAL.
+
+[Unit]$
+Description=Google Drive (rclone)$
+AssertPathIsDirectory=/home/pi/Desktop/Samba/Gdrive$
+Wants=network-online.target$
+After=network-online.target$
+$
+[Service]$
+Type=notify$
+ExecStart=/usr/bin/rclone mount gdrive: /home/pi/Desktop/Samba/Gdrive \$
+--config=/home/pi/.config/rclone/rclone.conf \$
+--allow-other \$
+--umask=002 \$
+--buffer-size 64M \$
+--vfs-cache-mode writes \$
+--poll-interval 15s \$
+--dir-cache-time 180h \$
+--timeout 1h \$
+--rc \$
+--rc-addr 127.0.0.1:5572$
+ExecStop=/bin/fusermount -uz /home/pi/Desktop/Samba/Gdrive$
+Restart=on-failure$
+RestartSec=6$
+User=pi$
+Group=pi$
+$
+[Install]$
+WantedBy=multi-user.target$
+$
+
+
+////SACAR BARRA INVERTIDA EN LINUX////
+ctrl+shift+u +5c y enter
+
+
+
+
+
+
+
