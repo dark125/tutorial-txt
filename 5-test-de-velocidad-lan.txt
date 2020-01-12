@@ -24,4 +24,4 @@ EJEMPLO:
 
 iperf3.exe -c 192.168.2.106
 
-***LA IP ES LA IP DE LA RPI4***
+***ES LA IP DE LA RPI4***
