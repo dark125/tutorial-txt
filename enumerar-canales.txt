@@ -1,7 +1,7 @@
 /////Mis canales de la TDT son 16, asi que lista m3u quiere que comience desde el 17 para eso voy a usar unos script perl///////
 
-1-Dentro de mis repositorios (https://github.com/dark125?tab=repositories) hay uno de nombre enumerar-canales,lo descargamos
-y lo ponemos dentro de la misma carpeta que contiene nuestro archivo m3u, en mi caso mi archivo se llama "lista-script-mexicano.m3u".
+1-Dentro de mis repositorios (https://github.com/dark125?tab=repositories) hay uno de nombre Perl-Enumerar-canales
+,lo descargamos y lo ponemos dentro de la misma carpeta que contiene nuestro archivo m3u, en mi caso mi archivo se llama "lista-script-mexicano.m3u".
 
 *Mi archivo m3u tiene este formato
 
