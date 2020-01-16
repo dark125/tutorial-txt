@@ -7,7 +7,7 @@ sudo apt-get update
 
 sudo apt-get dist-upgrade
 
-3-Reiniciarmos
+3-Reiniciamos
 
 sudo reboot
 
@@ -16,6 +16,6 @@ sudo reboot
 sudo rpi-update
 
 
-5-Reiniciarmos
+5-Reiniciamos
 
 sudo reboot
