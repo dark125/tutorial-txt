@@ -20,7 +20,7 @@ PASSWORD: TV
 
 3-CERRAMOS LA VENTANA.
 
-11-IR A Conguración >>General>>Base
+11-IR A Configuración >>General>>Base
 
 *Y COLOCAR en 
 default view level: expert
@@ -29,6 +29,8 @@ default view level: expert
 pero lo vamos a crear.
 
 file:///home/pi/guia/logos-peru/%C.png
+
+Channels icon name scheme: Service name picons
 
 5-guardamos.
 
@@ -93,11 +95,11 @@ sudo systemctl restart tvheadend
 
 16-CREAREMOS NUESTRA RED TDT
 
-Conguración->DBV Inpurts->Network.
+Configuración->DBV Inpurts->Network.
 
 •Damos click al botón add, nos aparecerá una pequeña ventana, ahí elegimos ISDB-T Network.
 
-•Inmediatamente después nos saldrá otra ventana, en la opción “Pre-defined muxes:”, debemos elegir el archivo
+•Inmediatamente después nos saldrá otra ventana, en la opción “Pre-defined muxes:”, debemos elegir el archivo
  de muxes que copiamos antes.
 •Network name: TDT
 •Pre-defined muxes: pe:pe-Lima-2
@@ -201,12 +203,12 @@ https://github.com/dark125/Pipe
 •Todos los archivos descargados deben colocarlo en una misma carpeta
 
 •Vamos usar un script de perl para agregar un texto antes de todas las url’s de nuestra lista.
-pipe:///usr/bin/mpeg -headers "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US)
+pipe:///usr/bin/ffmpeg -headers "User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US)
 AppleWebKit/534.20 (KHTML, like Gecko) Chrome/11.0.672.2 Safari/534.20" -loglevel fatal -re -i
 *Para esta lista es necesario usar un headers, para otras listas es probable que no sea necesario.
 
 •Para usar en otras listas:
-pipe:///usr/bin/mpeg -loglevel fatal -re -i
+pipe:///usr/bin/ffmpeg -loglevel fatal -re -i
 
 •También vamos agregar un texto después de las urls
 -map 0 -c copy -metadata service_name=CLAROS -f mpegts pipe:1
@@ -227,10 +229,10 @@ sudo mkdir -m 1777 /home/pi/guia/canales
 **********************************************************************
 
 
-1-Conguración->DBV Inpurts->Network.
+1-Configuración->DBV Inpurts->Network.
 •Le damos click al botón add y elegimos IPTV Automatic Network
 
-•Añadimos una nueva red de tipo IPTV Automática (signica que va a importar desde un M3U):
+•Añadimos una nueva red de tipo IPTV Automática (significa que va a importar desde un M3U):
 *Crearemos una red iptv sin escaneo, para eso añadiremos un Service ID que generalmente es 1.
 Para más información, si es que no te funciona la ID de 1, puede ver como saber el Service ID de tu
 lista m3u en este sitio web
@@ -240,20 +242,20 @@ Network name: CLARO
 Create bouquet: (x) marcado
 Maximum # of input streams: 0
 Scan after creation:: (-) desmarcado
-URL:file:///home/pi/guia/canales/lista-script-mexicano3.m3u
+URL:file:///home/pi/guia/canales/lista-script-mexicano3.m3u
 Maximum timeout (seconds): 15
 Character set: UTF-8
 SKip Startup Scan : (x) marcado
-EIT time oset: Local server time
+EIT time offset: Local server time
 Re-fetch period (mins): 1, si no estas haciendo pruebas es mejor dejarlo por defecto en 60.
 Service ID: 1
 
-**URL:file:///home/pi/guia/canales/lista-script-mexicano3.m3u ===> Reemplazar por su usuario y su
+**URL:file:///home/pi/guia/canales/lista-script-mexicano3.m3u ===> Reemplazar por su usuario y su
 lista m3u**
 
 
-•Nota sobre el parámetro “Re-fetch period”. Indica cada cuanto tiempo debe releer el fichero M3U
-para configurar los cambios que detecte. Muy interesante ponerlo a ‘1min’ si estás haciendo
+•Nota sobre el parámetro “Re-fetch period”. Indica cada cuanto tiempo debe releer el fichero M3U
+para configurar los cambios que detecte. Muy interesante ponerlo a ‘1min’ si estás haciendo
 pruebas.
 •En cuanto le des al botón “create” se irán creando los muxes y lo services.
 
@@ -282,10 +284,10 @@ esa opción es para crear los grupos de canales que estan en nuestra lista m3u.
 •Damos click en Map services para comenzar a crear los canales y tags (grupos).
 
 •Si nos vamos a la pestaña channels veremos los canales que se han creado.
-Conguration>>>Channel/EPG>>>Channels
+Configuration>>>Channel/EPG>>>Channels
 
 •Al colocarnos en la pestaña Channel Tags veremos los grupos de los canales.
-Conguration>>>Channel/EPG>>>Channel Tags
+Configuration>>>Channel/EPG>>>Channel Tags
 
 
 *************************************************************************************
@@ -297,7 +299,7 @@ Conguration>>>Channel/EPG>>>Channel Tags
 
 
 •En la pestaña Channels seleccionamos todos los canales de la TDT.
-Conguration>>>Channel/EPG>>>Channels
+Configuration>>>Channel/EPG>>>Channels
 •Con los canales seleccionados le damos click en Edit.
 
 •En la ventana que saldrá marcamos la opción Tags, al costado buscamos PERU, lo marcamos y lo
