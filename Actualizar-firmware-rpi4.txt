@@ -1,0 +1,21 @@
+
+1-Actualiza el listado con todos los paquetes que tenemos disponibles para instalar.
+
+sudo apt-get update
+
+2-Actualiza los paquetes que tenemos instalados con los programas y tambien paquetes del sistema operativo.
+
+sudo apt-get dist-upgrade
+
+3-Reiniciarmos
+
+sudo reboot
+
+4-Actualizar el firmware de la Raspberry Pi
+
+sudo rpi-update
+
+
+5-Reiniciarmos
+
+sudo reboot
