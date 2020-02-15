@@ -238,7 +238,7 @@ Para más información, si es que no te funciona la ID de 1, puede ver como sabe
 lista m3u en este sitio web
 https://tvheadend.org/projects/tvheadend/wiki/Automatic_IPTV_Network
 
-Network name: CLARO
+Network name: IPTV
 Create bouquet: (x) marcado
 Maximum # of input streams: 0
 Scan after creation:: (-) desmarcado
