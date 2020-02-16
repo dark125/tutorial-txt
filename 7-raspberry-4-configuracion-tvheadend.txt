@@ -290,6 +290,7 @@ Configuration>>>Channel/EPG>>>Channels
 Configuration>>>Channel/EPG>>>Channel Tags
 
 
+
 *************************************************************************************
           CREAREMOS UN GRUPO PARA LOS CANALES TDT
 ************************************************************************************
@@ -304,6 +305,41 @@ Configuration>>>Channel/EPG>>>Channels
 
 •En la ventana que saldrá marcamos la opción Tags, al costado buscamos PERU, lo marcamos y lo
 guardamos.
+
+
+**************************************************************************************************
+           CREAR UN USUARIO SIN CONTRASEÑA PARA ACCEDER DESDE NUESTRA RED LOCAL
+***************************************************************************************************
+
+1-VAMOS A CONFIGURATION >>> Users >>> Access Entries, DAMOS CLICK EN ADD (AÑADIR) Y LA LLENAMOS DE ESTA MANERA:
+
+Enabled: ✔
+Username: *
+Change parameters: Rights - Channel number range - Channel tags - DVR Configurations - Streaming profiles
+Streaming: Basic - Advanced - HTSP
+Allowed networks: 0.0.0.0/0
+
+Create
+
+
+2-Ahora vamos a pestaña Passwords y Add (añadir)
+
+Enabled: ✔
+Username: *
+Password: *
+
+create
+
+**********************************************************************
+
+Esto debería funcionar para canales:
+
+http://192.168.2.106:9981/playlist/channels.m3u
+
+Esto debería funcionar para guia:
+
+
+http://192.168.2.106:9981/xmltv/channels
 
 
 
