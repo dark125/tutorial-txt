@@ -1,0 +1,183 @@
+1-Descargar zap2xml para linux
+
+http://zap2xml.awardspace.info/
+
+2.-Instalar algunos modulos necesarios de perl
+
+sudo apt install libhttp-cookies-perl
+sudo apt install liblwp-protocol-https-perl
+sudo apt install libjson-perl
+
+3.-Registrase en https://www.tvguide.com/
+
+-Una vez registrado darle click en Menu Listings que esta arriba.
+-Elegir el proveedor dandole click en CHANGE
+-Ahora click en aRE YOU OUTSIDE THE U.S?
+-Elegir tu pais, en mi caso Perú.
+-Elegir tu proveedor de epg
+-Ahora vamos a escoger los canales que vamos a necesitar (favoritos), para eso
+vamos a darle click al icono de corazon que aparece al lado de cada canal.
+
+***OJO:SE DEBE CREAR UNA CUENTA POR CADA PROVEEDOR QUE SE VA A USAR****
+***YO CREE DOS CUENTAS UNA PARA PROVEEDOR CLARO PERU Y OTRO PARA PROVEEDOR CLARO COLOMBIA***
+
+
+4.-Voy a mover mi archivo descargado zap2xml.pl a mi carpeta scripts.
+
+cd /home/pi/Downloads
+
+sudo mv zap2xml.pl  /home/pi/guia/Scripts
+
+5.Damos permisos de ejecución al archivo
+
+sudo chmod 775 /home/pi/guia/Scripts/zap2xml.pl
+
+6.-Vamos a crear el archivo de configuración para zap2xml.pl
+
+nano /home/pi/guia/Scripts/clarotv-sat-peru.txt
+
+start=0
+days=7
+ncdays=0
+ncsdays=2
+retries=2
+user=xxxx
+pass=xxxxxx
+cache=/home/pi/guia/epg/cache1
+lang=spa
+outfile=/home/pi/guia/temp_epg/claro-per.xmltv
+outformat=xmltv
+
+
+nano /home/pi/guia/Scripts/clarotv-col.txt
+
+
+start=0
+days=7
+ncdays=0
+ncsdays=2
+retries=2
+user=xxxx
+pass=xxxxxx
+cache=/home/pi/guia/epg/cache2
+lang=spa
+outfile=/home/pi/guia/epg/claro-combinado.xmltv
+outformat=xmltv
+
+*************************
+start=0 ====> Significa comenzar a extraer la egp desde hoy mismo, por ejemplo si pusiera 1 ,entonces no descargaría la epg de hoy.
+days=7 =====> Numeros de días para descargar la epg.
+ncdays=0 ===>Para no almacenar en caché la información desde el final de los datos epg, es decir si colocará 3 y descargo 7 días de datos, los tres últimos días no se almacenarían en cache.
+ncsdays=2===>Si se vuelve a descargar los datos, ignorará los datos almacenados previamente en caché para hoy y mañana.
+retries=2===> Número de reintentos
+user=xxxx===>Correo de la cuenta tvguide.com
+pass=xxx===>Contraseña de tvguide.com
+cache======>Carpeta donde se almacenará la cache (es mejor crear una carpeta para cada cuenta de tvguide.com)
+lang=spa===>lenguaje
+outfile====>Donde se alamacenará el archivo xmltv
+outformat=Formato de salida.
+
+******************************************************************************************
+
+
+7.-Crearemos un archivo bash para ejecutar el script zap2xml.pl
+
+nano /home/pi/guia/Scripts/Zap2XML.sh
+
+
+#!/bin/bash
+
+#Colocarse en la carpeta Scripts
+
+cd /home/pi/guia/Scripts
+
+#Ejecutar zap2xml.pl
+
+./zap2xml.pl -z -C /home/pi/guia/Scripts/clarotv-sat-peru.txt -D -I -L -T -b
+
+#Combinar egp peru con epg colombia en un archivo llamado claro-combinado.xmltv
+#El nombre de este archivo esta en el archivo clarotv-col.txt
+
+./zap2xml.pl -z -C /home/pi/guia/Scripts/clarotv-col.txt -J /home/pi/guia/temp_epg/claro-per.xmltv -D -I -L -T -b
+
+#Eliminar los archivos temporales creados
+
+cd /home/pi/guia/temp_epg
+
+rm -f claro-per.xmltv > /dev/null 2>/dev/null
+
+
+
+8.Damos permisos de ejecución al archivo
+
+sudo chmod 775 /home/pi/guia/Scripts/Zap2XML.sh
+
+
+9-CREAREMOS UNA TAREA PROGRAMADA QUE SE EJECUTARA LOS DIAS MARTES Y VIERNES 
+A LAS 5:00 AM
+
+14-TIPEAMOS
+
+crontab -e
+
+15-ELEGIMOS NUESTRO EDITOR PREFERIDO, YO VOY A ELEGIR nano (1 + enter)
+
+16-AHORA NOS VAMOS HASTA ABAJO Y ESCRIBIMOS ESTO.
+
+0 5 * * 2,5 /home/pi/guia/Scripts/Zap2XML.sh
+
+*********************
+
+Probar el script
+
+cd /home/pi/guia/Scripts
+
+./Zap2XML.sh
+
+
+***********************************************************************************
+AHORA VAMOS A HACER QUE TVHEADEND LEA LA GUIA CREADA
+**********************************************************************************
+
+
+1-DESCARGAR EL GRABBER DESDE ESTE LINK
+
+https://github.com/dark125?tab=repositories
+
+
+2-AHORA VAMOS A EDITARLO
+
+-Reemplazar esto
+
+xmltv_file_location=/home/pi/guia/epg/claro-combinado.xmltv
+
+por
+
+xmltv_file_location=/home/pi/guia/epg/claro-combinado.xmltv
+
+
+3-Mover lo descargado a la carpeta bin
+
+cd /home/pi/Downloads
+
+sudo mv tv_grab_guide_com /usr/bin/
+
+4-CAMBIAR PERMISOS
+
+sudo chown root:root /usr/bin/tv_grab_guide_com
+sudo chmod 755 /usr/bin/tv_grab_guide_com
+
+sudo chmod +x /usr/bin/tv_grab_guide_com
+
+4-REINICIAR TVHEADEND
+
+sudo systemctl restart tvheadend
+
+5--HABILITE EN TVHEADEND tv_grab_guide_com(check enable)
+
+
+
+
+
+
+
