@@ -82,7 +82,7 @@ nano /home/pi/guia/Scripts/webgrabplus.sh
 -Copiamos esto
 
 #!/bin/bash
-/home/pi/guia/Scripts/webgrabplus.sh
+/home/pi/guia/WebgrabPlus/.wg++/run.sh
 
 
 -Lo hacemos ejecutable
