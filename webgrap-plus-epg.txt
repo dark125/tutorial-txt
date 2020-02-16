@@ -38,12 +38,7 @@ cd .wg++
 ./install.sh
 
 7-DESCOMPRIMIR el archivo para actualizar
- Primero retrocedemos una carpeta con:
- 
-cd ..
- 
-Luego descomprimimos
- 
+
 tar -zxvf WebGrabPlus_V2.1.9_beta_install.tar.gz
 
 8-COPIAR mi.tv.ini y mi.tv.channels.xml a la carpeta "siteini.user"
@@ -57,7 +52,7 @@ tar -zxvf WebGrabPlus_V2.1.9_beta_install.tar.gz
   <user-agent>Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20100101 Firefox/29.0</user-agent>
   <logging>on</logging>
   <retry time-out="5">4</retry> 
-  <timespan>6</timespan>
+  <timespan>3</timespan>
   <update>f</update>
 
 10-CREAR CARPETA /home/pi/guia/epg/
@@ -108,6 +103,13 @@ crontab -e
 
 0 3 * * 2,5 /home/pi/guia/Scripts/webgrabplus.sh
 
+
+
+**CREAREMOS UNA TAREA PROGRAMADA QUE SE EJECUTARA LOS DIAS A LAS 3:00 AM**
+
+crontab -e
+
+0 3 * * * /home/pi/guia/Scripts/webgrabplus.sh
 
 ***********************************************************************************
 AHORA VAMOS A HACER QUE TVHEADEND LEA LA GUIA CREADA
@@ -161,11 +163,5 @@ PEGAR ESTO:
 0 4 * * 2,5 
 
 
-
-
-
-
-
-
-
-
+# Ejecutar Todos los días a las 06:00 AM
+0 6 * * *
