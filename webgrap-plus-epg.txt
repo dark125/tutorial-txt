@@ -2,7 +2,7 @@
 
 sudo apt-get install mono-runtime libmono-system-data4.0-cil libmono-system-web4.0-cil
 
-2-Descargar version para windows
+2-Descargar version para linux
 
 http://webgrabplus.com/download
 
