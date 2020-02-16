@@ -38,7 +38,12 @@ cd .wg++
 ./install.sh
 
 7-DESCOMPRIMIR el archivo para actualizar
-
+ Primero retrocedemos una carpeta con:
+ 
+cd ..
+ 
+Luego descomprimimos
+ 
 tar -zxvf WebGrabPlus_V2.1.9_beta_install.tar.gz
 
 8-COPIAR mi.tv.ini y mi.tv.channels.xml a la carpeta "siteini.user"
