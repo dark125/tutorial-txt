@@ -120,7 +120,7 @@ sudo resize2fs /dev/sda2
 
 sudo nano /boot/cmdline.txt
 
-30-DEBERÍA QUEDAR ALGO ASI
+30-DEBERÍA QUEDAR ALGO ASI (borrar init=/usr/lib/raspi-config/init_resize.sh)
 
 console=serial0,115200 console=tty1 root=PARTUUID=d34db33f-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait quiet ip=192.168.2.106
 
